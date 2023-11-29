@@ -1,9 +1,20 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const loginUser = async (e) => {
+    e.preventDefault();
+    const body = { email, password };
+    const req = await axios.post('/api/users/auth', body, {
+      withCredentials: true,
+    });
+    console.log(req.data);
+  };
 
   return (
     <div className='bg-black min-h-[100vh] flex justify-center py-4'>
@@ -16,15 +27,15 @@ const Login = () => {
           className='bg-black border border-white rounded-md text-white font-medium p-4 px-6 w-[100%]'
         />
         <input
-          type='email'
+          type='password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder='enter password'
           className='bg-black border border-white rounded-md text-white font-medium p-4 px-6 w-[100%]'
         />
-
+        <p className='text-white font-mono'>{error}</p>
         <button
-          // onClick={submitImage}
+          onClick={loginUser}
           className='bg-black border border-white rounded-md text-white font-bold p-4 px-32 hover:bg-white hover:text-black transition-colors duration-300 w-[100%]'
         >
           Login

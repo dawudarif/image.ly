@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 const Register = () => {
@@ -6,11 +8,34 @@ const Register = () => {
   const [name, setName] = useState('');
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
+  const registerUser = async (e) => {
+    e.preventDefault();
+    try {
+      if (password !== confirmPassword) {
+        setError('Passwords do not match');
+        return;
+      }
+      const body = { email, password, username, name };
+      const response = await axios.post('/api/users/register', body, {
+        withCredentials: true,
+      });
+
+      console.log(response);
+
+      if (response.status !== 201) {
+        setError(response.data);
+      }
+    } catch (error) {
+      setError(error.response.data.error);
+    }
+  };
+
   return (
-    <div className='bg-black min-h-[100vh] flex justify-center py-4'>
-      <form className='flex justify-center items-center flex-col gap-6 w-[30%]'>
+    <div className='bg-black min-h-[100vh] flex justify-center py-12'>
+      <form className='flex  items-center flex-col gap-6 w-[30%]'>
         <input
           type='text'
           value={name}
@@ -33,15 +58,22 @@ const Register = () => {
           className='bg-black border border-white rounded-md text-white font-medium p-4 px-6 w-[100%]'
         />
         <input
-          type='email'
+          type='password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder='enter password'
           className='bg-black border border-white rounded-md text-white font-medium p-4 px-6 w-[100%]'
         />
-        <p>{error}</p>
+        <input
+          type='password'
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          placeholder='confirm password'
+          className='bg-black border border-white rounded-md text-white font-medium p-4 px-6 w-[100%]'
+        />
+        <p className='text-white font-mono'>{error}</p>
         <button
-          // onClick={submitImage}
+          onClick={registerUser}
           className='bg-black border border-white rounded-md text-white font-bold p-4 px-32 hover:bg-white hover:text-black transition-colors duration-300 w-[100%]'
         >
           Register

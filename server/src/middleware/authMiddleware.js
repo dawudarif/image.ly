@@ -25,8 +25,9 @@ const protect = async (req, res, next) => {
           id: true,
           name: true,
           email: true,
-          updatedAt: true,
           createdAt: true,
+          username: true,
+          imgUrl: true,
         },
       });
 
