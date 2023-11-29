@@ -6,7 +6,7 @@ const Header = () => {
   const size = 30;
 
   return (
-    <div className='bg-black flex justify-center items-center py-6 gap-6 border-b border-white relative'>
+    <div className='bg-black flex justify-center items-center py-6 gap-6 border-b border-[#252525] relative'>
       <h1 className='absolute left-6 font-semibold font-mono text-white text-[1.5rem]'>
         Image.ly
       </h1>

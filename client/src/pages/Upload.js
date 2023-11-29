@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FaFileImage } from 'react-icons/fa';
 import axios from 'axios';
 import { FiPaperclip } from 'react-icons/fi';
@@ -7,28 +7,39 @@ import { useNavigate } from 'react-router-dom';
 function UploadImage() {
   const navigate = useNavigate();
 
-  const [image, setImage] = useState(undefined);
+  const [file, setFile] = useState(undefined);
   const [caption, setCaption] = useState('');
   const [previewUrl, setPreviewUrl] = useState(undefined);
   const fileInputRef = useRef(null);
   const [type, setType] = useState('');
-  console.log(image?.size / 1024);
+  useEffect(() => {
+    const size = file?.size / (1024 * 1024);
+    if (size > 3) {
+      setType('lol');
+      setFile(undefined);
+    }
+  }, [file]);
 
   const submitImage = async () => {
+    const size = file.size / (1024 * 1024);
+    if (size > 3) {
+      setType('lol');
+    }
+
     try {
       setType('uploading...');
 
-      const api = await axios.get(`/api/get-upload-url?type=${image?.type}`);
+      const api = await axios.get(`/api/get-upload-url?type=${file?.type}`);
       const url = api.data.url;
       const key = api.data.key;
 
-      await axios.put(url, image, {
-        'Content-Type': image?.type,
+      await axios.put(url, file, {
+        'Content-Type': file?.type,
       });
 
       const data = {
         media: key,
-        mediaType: image?.type,
+        mediaType: file?.type,
         text: caption,
       };
 
@@ -45,27 +56,45 @@ function UploadImage() {
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0] ?? null;
-    setImage(file);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-    }
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+    const size = file?.size / (1024 * 1024);
+    if (size > 3) {
+      setType('File should be smaller than 3Mbs');
+      setFile(undefined);
     } else {
-      setPreviewUrl(null);
+      setFile(file);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      if (file) {
+        const url = URL.createObjectURL(file);
+        setPreviewUrl(url);
+      } else {
+        setPreviewUrl(null);
+      }
     }
   };
 
   return (
     <div className='flex justify-center items-center h-[100vh] bg-black text-white gap-6'>
       <div>
-        {previewUrl ? (
-          <img
-            src={previewUrl}
-            alt='image1'
-            className='h-[15rem] w-[15rem] shadow-sm shadow-white  border border-white rounded-md object-cover'
-          />
+        {previewUrl && file ? (
+          <div className='mt-4'>
+            {file.type.startsWith('image/') ? (
+              <img
+                src={previewUrl}
+                alt='Selected file'
+                className='h-[15rem] w-[15rem] shadow-sm shadow-white  border border-white rounded-md object-cover'
+              />
+            ) : (
+              file.type.startsWith('video/') && (
+                <video
+                  src={previewUrl}
+                  controls
+                  className='h-[15rem] w-[15rem] shadow-sm shadow-white  border border-white rounded-md object-cover'
+                />
+              )
+            )}
+          </div>
         ) : (
           <div className='h-[15rem] w-[15rem] shadow-sm shadow-white  border border-white rounded-md flex justify-center items-center'>
             <FaFileImage size={30} />

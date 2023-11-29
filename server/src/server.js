@@ -1,21 +1,18 @@
 import express from 'express';
-import { getPost } from './controller/createPost.js';
-import { deletePost } from './controller/deletePost.js';
-import { getPosts } from './controller/getPosts.js';
-import { getUploadUrl } from './controller/getUploadUrl.js';
+import { errorHandler, notFound } from './middleware/errorMiddleware.js';
+import userRoutes from './routes/userRoutes.js';
+import postRoutes from './routes/postRoutes.js';
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.get('/api/get-upload-url', getUploadUrl);
+app.use('/api/users', userRoutes);
+app.use('/api/post', postRoutes);
 
-app.post('/api/create-post', getPost);
-
-app.get('/api/get-posts', getPosts);
-
-app.delete('/api/delete-post/:id', deletePost);
+app.use(notFound);
+app.use(errorHandler);
 
 // start server
 app.listen(4000, () => {

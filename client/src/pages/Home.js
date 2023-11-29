@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { MdDelete } from 'react-icons/md';
-import { FaRegHeart } from 'react-icons/fa';
+import { TbDownload } from 'react-icons/tb';
 
 const Home = () => {
   const [data, setData] = useState([]);
@@ -30,27 +30,51 @@ const Home = () => {
   return (
     <div className='bg-black min-h-[100vh] flex justify-center py-4'>
       <div className='w-[25rem] flex h-auto flex-col gap-4 mt-4'>
-        {data.map((p) => (
-          <div key={p.id} className='rounded-md border border-white p-0'>
-            <img
-              src={p.media}
-              alt={p.id}
-              className='rounded-sm overflow-hidden min-h-[20rem] object-cover'
-            />
+        {data.map((p) => {
+          const mediaType = p.mediaType.split('/')[0];
 
-            <div className='flex justify-between items-center mt-2 p-4'>
-              <p className='text-white font-medium'>{p.caption}</p>
-              <div className='flex justify-center items-center gap-2'>
-                <FaRegHeart color='white' size={20} />
-                <MdDelete
-                  color='white'
-                  size={20}
-                  onClick={() => deletePost(p.id)}
+          return (
+            <div key={p.id} className='rounded-md border border-white p-0'>
+              {mediaType === 'image' ? (
+                <img
+                  src={p.media}
+                  alt={p.id}
+                  loading='lazy'
+                  className='rounded-sm overflow-hidden min-h-[20rem] object-cover'
                 />
+              ) : (
+                <video
+                  src={p.media}
+                  autoPlay
+                  controls
+                  muted
+                  autoplay
+                  loop
+                  controlsList='nodownload'
+                  className='rounded-sm overflow-hidden min-h-[20rem] object-cover'
+                />
+              )}
+
+              <div className='flex justify-between items-center mt-2 p-4'>
+                <p className='text-white font-medium'>{p.caption}</p>
+                <div className='flex justify-center items-center gap-2'>
+                  <a
+                    id='downloadLink'
+                    href={p.media}
+                    download='video_filename.mp4'
+                  >
+                    <TbDownload color='white' size={20} />
+                  </a>
+                  <MdDelete
+                    color='white'
+                    size={20}
+                    onClick={() => deletePost(p.id)}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

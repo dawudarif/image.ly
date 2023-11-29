@@ -7,10 +7,33 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Post {
+model Account {
   id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  password  String
+  imgUrl    String?
   createdAt DateTime @default(now())
-  media     String   @unique
-  mediaType String?
-  caption   String?
+  posts     Post[]   @relation("postedByUser")
+  likes     Like[]   @relation("likedBy")
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  media       String   @unique
+  mediaType   String?
+  caption     String?
+  createdAt   DateTime @default(now())
+  createdBy   Account  @relation("postedByUser", fields: [createdById], references: [id])
+  createdById Int
+  likes       Like[]   @relation("likedByPost")
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  post      Post     @relation("likedByPost", fields: [postId], references: [id])
+  postId    Int
+  likedBy   Account  @relation("likedBy", fields: [accountId], references: [id])
+  accountId Int
+  likedAt   DateTime @default(now())
 }
