@@ -29,18 +29,27 @@ export const authUser = async (req, res) => {
 };
 
 export const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, username } = req.body;
 
-  const userExists = await prisma.account.findUnique({
+  const emailExists = await prisma.account.findUnique({
     where: { email },
   });
 
-  if (userExists) {
+  const userNameExists = await prisma.account.findUnique({
+    where: { username },
+  });
+
+  if (emailExists) {
     res.status(409).json({ error: 'User with this email already exists.' });
     return;
   }
 
-  if (!email || !name || !password) {
+  if (userNameExists) {
+    res.status(409).json({ error: 'User with this username already exists.' });
+    return;
+  }
+
+  if (!email || !name || !password || !username) {
     res.status(406).json({ error: 'Necessary fields not provided' });
     return;
   }
@@ -51,6 +60,7 @@ export const registerUser = async (req, res) => {
   const user = await prisma.account.create({
     data: {
       email,
+      username,
       name,
       password: hashedPassword,
     },
@@ -92,6 +102,7 @@ export const getUserProfile = async (req, res) => {
     id: user.id,
     name: user.name,
     email: user.email,
+    username: user.username,
     image: user.image,
   });
 };
