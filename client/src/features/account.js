@@ -24,6 +24,7 @@ const userSlice = createSlice({
     userProfile: undefined,
     loading: 'idle',
     error: undefined,
+    image: null,
   },
   reducers: {},
   extraReducers: (builder) => {

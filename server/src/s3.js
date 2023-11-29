@@ -41,6 +41,24 @@ export const getUploadPresignedUrl = async (fileType) => {
   return { url, key };
 };
 
+export const uploadFile = async (fileBuffer, mimetype) => {
+  const key = `${generateFileName()}.${mimetype.split('/')[1]}`;
+
+  const uploadParams = {
+    Bucket: bucketName,
+    Body: fileBuffer,
+    Key: key,
+    ContentType: mimetype,
+  };
+
+  const command = new PutObjectCommand(uploadParams);
+  // console.log(command); {key,bucket etc}
+
+  const response = await s3Client.send(command);
+
+  return { key, response };
+};
+
 export const getImage = async (key) => {
   const params = {
     Bucket: bucketName,

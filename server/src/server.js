@@ -2,6 +2,7 @@ import express from 'express';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 import userRoutes from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
+import bodyParser from 'body-parser';
 
 const app = express();
 app.use(express.json());

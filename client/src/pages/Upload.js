@@ -6,19 +6,11 @@ import { useNavigate } from 'react-router-dom';
 
 function UploadImage() {
   const navigate = useNavigate();
-
   const [file, setFile] = useState(undefined);
   const [caption, setCaption] = useState('');
   const [previewUrl, setPreviewUrl] = useState(undefined);
   const fileInputRef = useRef(null);
   const [type, setType] = useState('');
-  useEffect(() => {
-    const size = file?.size / (1024 * 1024);
-    if (size > 3) {
-      setType('lol');
-      setFile(undefined);
-    }
-  }, [file]);
 
   const submitImage = async () => {
     const size = file.size / (1024 * 1024);

@@ -2,6 +2,7 @@ import { MdOutlineHome } from 'react-icons/md';
 import { FiPaperclip } from 'react-icons/fi';
 import { FiUser } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
+import { IoLogOutOutline } from 'react-icons/io5';
 
 const Header = () => {
   const size = 30;
@@ -20,6 +21,9 @@ const Header = () => {
       <Link to='/profile'>
         <FiUser size={size} color='white' />
       </Link>
+      <div>
+        <IoLogOutOutline size={size} color='white' />
+      </div>
     </div>
   );
 };
