@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 const ProfilePosts = () => {
   const [posts, setPosts] = useState(null);
+  const view = posts?.length === 0 ? true : false;
 
   const myPosts = async () => {
     try {
@@ -20,21 +21,24 @@ const ProfilePosts = () => {
     myPosts();
   }, []);
 
-  const view = posts || [1, 2, 3];
-
   return (
     <div className='grid grid-cols-3 gap-1 mt-2'>
-      {view.map((item, index) => (
-        <div key={index} className='h-48 w-[100%] border border-[#252525]'>
-          {posts && (
-            <img
-              src={item.media}
-              alt={item.caption}
-              className='object-cover h-full w-full'
-            />
-          )}
-        </div>
-      ))}
+      {view ? (
+        <></>
+      ) : (
+        posts &&
+        posts.map((item, index) => (
+          <div key={index} className='h-48 w-[100%] border border-[#252525]'>
+            {posts && (
+              <img
+                src={item.media}
+                alt={item.caption}
+                className='object-cover h-full w-full'
+              />
+            )}
+          </div>
+        ))
+      )}
     </div>
   );
 };

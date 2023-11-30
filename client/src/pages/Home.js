@@ -18,12 +18,9 @@ const Home = () => {
     <div className='bg-black min-h-[100vh] flex justify-center py-4'>
       <div className='w-[25rem] flex h-auto flex-col gap-4 mt-4'>
         {data.map((post) => (
-          <Post
-            key={post.id}
-            post={post}
-            data={data}
-            setData={(items) => setData(items)}
-          />
+          <div key={post.id}>
+            <Post post={post} data={data} setData={(items) => setData(items)} />
+          </div>
         ))}
       </div>
     </div>

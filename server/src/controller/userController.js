@@ -1,12 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { prisma } from '../../prisma/prisma.js';
+import { deleteImage, getImage, uploadFile } from '../s3.js';
 import { generateToken } from '../utils/generateToken.js';
-import {
-  deleteImage,
-  getImage,
-  getUploadPresignedUrl,
-  uploadFile,
-} from '../s3.js';
 
 export const authUser = async (req, res) => {
   const { email, password } = req.body;
@@ -116,9 +111,13 @@ export const getUserProfile = async (req, res) => {
 export const getProfilePic = async (req, res) => {
   const key = req.user.imgUrl;
 
-  const image = await getImage(key);
+  if (key) {
+    const image = await getImage(key);
 
-  return res.status(200).send(image);
+    res.status(200).send(image);
+  } else {
+    res.status(200).send(null);
+  }
 };
 
 export const updateProfilePic = async (req, res) => {

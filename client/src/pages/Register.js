@@ -23,11 +23,10 @@ const Register = () => {
         withCredentials: true,
       });
 
-      console.log(response);
-
       if (response.status !== 201) {
         setError(response.data);
       }
+      window.location.href = '/';
     } catch (error) {
       setError(error.response.data.error);
     }

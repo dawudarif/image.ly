@@ -4,7 +4,6 @@ import { TbDownload } from 'react-icons/tb';
 import { useSelector } from 'react-redux';
 
 const Post = ({ post, data, setData }) => {
-  console.log(post);
   const mediaType = post.mediaType.split('/')[0];
   const state = useSelector((store) => store.account.userProfile);
 
