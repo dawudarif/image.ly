@@ -70,7 +70,7 @@ function UploadImage() {
   };
 
   return (
-    <div className="flex h-[100vh] flex-col items-center justify-center gap-2 bg-black text-white md:flex-row lg:md:gap-6 lg:flex-row">
+    <div className="xs:flex-col xs:gap-2 flex h-[100vh] flex-row items-center justify-center gap-6 bg-black text-white sm:flex-col sm:gap-2">
       <div>
         {previewUrl && file ? (
           <div className="mt-4">
