@@ -13,7 +13,7 @@ const Login = () => {
     const req = await axios.post('/api/users/auth', body, {
       withCredentials: true,
     });
-    console.log(req.data);
+    window.location.href = '/';
   };
 
   return (

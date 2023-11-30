@@ -21,7 +21,9 @@ function UploadImage() {
     try {
       setType('uploading...');
 
-      const api = await axios.get(`/api/get-upload-url?type=${file?.type}`);
+      const api = await axios.get(
+        `/api/posts/get-upload-url?type=${file?.type}`,
+      );
       const url = api.data.url;
       const key = api.data.key;
 
@@ -35,7 +37,7 @@ function UploadImage() {
         text: caption,
       };
 
-      await axios.post(`/api/create-post`, data);
+      await axios.post(`/api/posts/create-post`, data);
 
       setType('media uploaded');
 

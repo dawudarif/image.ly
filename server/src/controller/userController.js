@@ -127,7 +127,9 @@ export const updateProfilePic = async (req, res) => {
 
   const key = req.user.imgUrl;
 
-  await deleteImage(key);
+  if (key) {
+    await deleteImage(key);
+  }
 
   const upload = await uploadFile(fileBuffer, mimeType);
 

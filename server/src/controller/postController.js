@@ -1,8 +1,9 @@
 import { prisma } from '../../prisma/prisma.js';
-import { getUploadPresignedUrl } from '../s3.js';
+import { getImage, getUploadPresignedUrl } from '../s3.js';
 
 export const getUploadUrl = async (req, res) => {
   const fileType = req.query.type;
+
   const { url, key } = await getUploadPresignedUrl(fileType);
 
   res.json({ url, key });
@@ -10,6 +11,39 @@ export const getUploadUrl = async (req, res) => {
 
 export const getPosts = async (req, res) => {
   const posts = await prisma.post.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+    include: {
+      createdBy: {
+        select: {
+          id: true,
+          username: true,
+          imgUrl: true,
+        },
+      },
+    },
+  });
+
+  const getImagePromises = posts.map(async (item) => ({
+    ...item,
+    createdBy: {
+      ...item.createdBy,
+      imgUrl: await getImage(item.createdBy.imgUrl),
+    },
+    media: await getImage(item.media),
+  }));
+
+  const imageDataResolved = await Promise.all(getImagePromises);
+
+  res.status(200).json(imageDataResolved);
+};
+
+export const myPosts = async (req, res) => {
+  const posts = await prisma.post.findMany({
+    where: {
+      createdById: req.user.id,
+    },
     orderBy: {
       createdAt: 'desc',
     },
@@ -30,6 +64,7 @@ export const createPost = async (req, res) => {
 
   const post = await prisma.post.create({
     data: {
+      createdById: req.user.id,
       caption: text,
       media,
       mediaType,

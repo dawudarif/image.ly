@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FaPlus } from 'react-icons/fa6';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import ProfilePosts from '../components/Profile/ProfilePosts';
 
 const Profile = () => {
   const state = useSelector((store) => store.account.userProfile);
@@ -24,7 +25,9 @@ const Profile = () => {
       });
 
       setProfilePic(response.data);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const submitImage = async () => {
@@ -49,7 +52,7 @@ const Profile = () => {
       // navigate('/', { replace: true });
     } catch (error) {
       setText(error.message);
-      // console.log(error);
+      console.log(error);
     } finally {
       setPreviewUrl(undefined);
     }
@@ -152,11 +155,12 @@ const Profile = () => {
       )}
       <div className='w-[40%] mt-[5rem]'>
         <div className='border-b border-[#252525] text-white w-[100%] flex justify-around items-center p-4'>
-          <GrGallery size={30} color='#252525' />
-          <Link to='/upload'>
+          <GrGallery size={30} color='white' />
+          <Link to='/new-post'>
             <FaPlus size={30} color='#252525' />
           </Link>
         </div>
+        <ProfilePosts />
       </div>
     </div>
   );

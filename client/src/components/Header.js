@@ -4,10 +4,22 @@ import { FiUser } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { IoLogOutOutline } from 'react-icons/io5';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 const Header = () => {
   const size = 30;
   const state = useSelector((store) => store.account.userProfile);
+
+  const logoutUser = async () => {
+    try {
+      const response = await axios.get('/api/users/logout');
+      if (response) {
+        window.location.href = '/login';
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className='bg-black flex justify-center items-center py-6 gap-8 border-b border-[#252525] relative'>
@@ -24,7 +36,7 @@ const Header = () => {
         <FiUser size={size} color='white' />
       </Link>
       {state && (
-        <div>
+        <div onClick={() => logoutUser()}>
           <IoLogOutOutline size={size} color='white' />
         </div>
       )}
