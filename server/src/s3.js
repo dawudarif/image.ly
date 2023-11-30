@@ -52,7 +52,6 @@ export const uploadFile = async (fileBuffer, mimetype) => {
   };
 
   const command = new PutObjectCommand(uploadParams);
-  // console.log(command); {key,bucket etc}
 
   const response = await s3Client.send(command);
 
@@ -73,8 +72,6 @@ export const getImage = async (key) => {
 };
 
 export const deleteImage = async (key) => {
-  console.log(key);
-
   const deleteParams = {
     Bucket: bucketName,
     Key: key,

@@ -2,13 +2,16 @@ import axios from 'axios';
 import { MdDelete } from 'react-icons/md';
 import { TbDownload } from 'react-icons/tb';
 import { useSelector } from 'react-redux';
+import { HiMiniHeart } from 'react-icons/hi2';
 
 const Post = ({ post, data, setData }) => {
   const mediaType = post.mediaType ? post.mediaType.split('/')[0] : null;
   const state = useSelector((store) => store.account.userProfile);
 
   const deletePost = async (id) => {
-    const post = await axios.delete(`/api/posts/delete-post/${id}`);
+    const post = await axios.delete(`/api/posts/delete-post/${id}`, {
+      withCredentials: true,
+    });
 
     const deleteId = post.data.id;
 
@@ -19,9 +22,62 @@ const Post = ({ post, data, setData }) => {
     }
   };
 
+  const likePost = async (id) => {
+    const post = await axios.put(`/api/posts/add-like/${id}`, {
+      withCredentials: true,
+    });
+
+    const response = post.data;
+
+    if (response) {
+      const updatedData = data.map((post) => {
+        if (post.id === response.postId) {
+          return {
+            ...post,
+            _count: { likes: post._count.likes + 1 },
+            likes: {
+              id: response.id,
+              accountId: response.accountId,
+            },
+          };
+        }
+        return post;
+      });
+
+      setData(updatedData);
+    }
+  };
+
+  const removeLike = async (postId, like) => {
+    const body = { id: postId, likeId: like };
+
+    const post = await axios.put(`/api/posts/remove-like`, body, {
+      withCredentials: true,
+    });
+
+    const response = post.data;
+
+    if (response) {
+      const updatedData = data.map((post) => {
+        if (post.id === response.postId) {
+          return {
+            ...post,
+            _count: { likes: post._count.likes - 1 },
+            likes: undefined,
+          };
+        }
+        return post;
+      });
+
+      setData(updatedData);
+    }
+  };
+
   if (!post) {
     return;
   }
+
+  const liked = post.likes && post.likes?.accountId === state.id;
 
   return (
     <div key={post.id} className='rounded-md border border-[#252525] p-0'>
@@ -58,7 +114,20 @@ const Post = ({ post, data, setData }) => {
       <div className='flex justify-between items-center mt-2 p-4'>
         <p className='text-white font-medium'>{post.caption}</p>
         <div className='flex justify-center items-center gap-2'>
-          <a id='downloadLink' href={post.media} download='video_filename.mp4'>
+          <div className='flex justify-center items-center gap-1'>
+            <p className='text-white'>{post._count.likes}</p>
+            <HiMiniHeart
+              size={24}
+              color={!!liked ? '#e74032' : 'white'}
+              onClick={
+                !!liked
+                  ? () => removeLike(post.id, post.likes.id)
+                  : () => likePost(post.id)
+              }
+            />
+          </div>
+
+          <a id='downloadLink' href={post.media} download={post.caption}>
             <TbDownload color='white' size={20} />
           </a>
           {post.createdBy.id === state.id && (

@@ -22,6 +22,20 @@ export const getPosts = async (req, res) => {
           imgUrl: true,
         },
       },
+      likes: {
+        where: {
+          accountId: req.user.id,
+        },
+        select: {
+          id: true,
+          accountId: true,
+        },
+      },
+      _count: {
+        select: {
+          likes: true,
+        },
+      },
     },
   });
 
@@ -31,6 +45,7 @@ export const getPosts = async (req, res) => {
       ...item.createdBy,
       imgUrl: await getImage(item.createdBy.imgUrl),
     },
+    likes: item.likes[0],
     media: await getImage(item.media),
   }));
 
@@ -92,4 +107,25 @@ export const deletePost = async (req, res) => {
   } else {
     res.status(500);
   }
+};
+
+export const addLike = async (req, res) => {
+  const { id } = req.params;
+
+  const likePost = await prisma.like.create({
+    data: { postId: id, accountId: req.user.id },
+  });
+
+  res.status(200).json(likePost);
+};
+
+export const removeLike = async (req, res) => {
+  const { id, likeId } = req.body;
+  console.log(req.body);
+
+  const removeLike = await prisma.like.delete({
+    where: { id: likeId, postId: id, accountId: req.user.id },
+  });
+
+  res.status(200).json(removeLike);
 };
