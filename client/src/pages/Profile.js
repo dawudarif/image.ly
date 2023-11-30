@@ -16,8 +16,6 @@ const Profile = () => {
   const fileInputRef = useRef(null);
   const [profilePic, setProfilePic] = useState(null);
 
-  const myPosts = async () => {};
-
   const fetchImage = async () => {
     try {
       const response = await axios.get('/api/users/profile-pic', {

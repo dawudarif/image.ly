@@ -1,5 +1,5 @@
 import { prisma } from '../../prisma/prisma.js';
-import { getImage, getUploadPresignedUrl } from '../s3.js';
+import { deleteImage, getImage, getUploadPresignedUrl } from '../s3.js';
 
 export const getUploadUrl = async (req, res) => {
   const fileType = req.query.type;
@@ -78,8 +78,12 @@ export const deletePost = async (req, res) => {
   const { id } = req.params;
 
   const deletePost = await prisma.post.delete({
-    where: { id: Number(id) },
+    where: { id: id, createdById: req.user.id },
   });
+
+  if (deletePost) {
+    res.status(401);
+  }
 
   const deletePostImage = await deleteImage(deletePost.media);
 
