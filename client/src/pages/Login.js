@@ -1,18 +1,22 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Ring from '../components/loading/ring';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const loginUser = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const body = { email, password };
     const req = await axios.post('/api/users/auth', body, {
       withCredentials: true,
     });
+    setLoading(false);
     window.location.href = '/';
   };
 
@@ -36,9 +40,12 @@ const Login = () => {
         <p className='text-white font-mono'>{error}</p>
         <button
           onClick={loginUser}
-          className='bg-black border border-white rounded-md text-white font-bold p-4 px-32 hover:bg-white hover:text-black transition-colors duration-300 w-[100%]'
+          className={`bg-black border border-white rounded-md text-white font-bold p-4 px-32 ${
+            !loading && 'hover:bg-white hover:text-black'
+          } transition-colors duration-300 w-[100%]`}
+          disabled={loading}
         >
-          Login
+          {loading ? <Ring size={22} /> : <>Login</>}
         </button>
         <Link to='/register' className='text-white hover:underline italic'>
           New to Image.ly? Register here.

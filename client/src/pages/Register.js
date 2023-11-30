@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import Ring from '../components/loading/ring';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -10,9 +11,11 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const registerUser = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       if (password !== confirmPassword) {
         setError('Passwords do not match');
@@ -29,6 +32,8 @@ const Register = () => {
       window.location.href = '/';
     } catch (error) {
       setError(error.response.data.error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,10 +78,14 @@ const Register = () => {
         <p className='text-white font-mono'>{error}</p>
         <button
           onClick={registerUser}
-          className='bg-black border border-white rounded-md text-white font-bold p-4 px-32 hover:bg-white hover:text-black transition-colors duration-300 w-[100%]'
+          className={`bg-black border border-white rounded-md text-white font-bold p-4 px-32 ${
+            !loading && 'hover:bg-white hover:text-black'
+          } transition-colors duration-300 w-[100%]`}
+          disabled={loading}
         >
-          Register
+          {loading ? <Ring size={22} /> : <> Register </>}
         </button>
+
         <Link to='/login' className='text-white hover:underline italic'>
           Already a user? Login here.
         </Link>

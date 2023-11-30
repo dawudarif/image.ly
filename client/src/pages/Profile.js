@@ -6,6 +6,7 @@ import { FaPlus } from 'react-icons/fa6';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import ProfilePosts from '../components/Profile/ProfilePosts';
+import Ring from '../components/loading/ring';
 
 const Profile = () => {
   const state = useSelector((store) => store.account.userProfile);
@@ -15,6 +16,7 @@ const Profile = () => {
   const [text, setText] = useState('');
   const fileInputRef = useRef(null);
   const [profilePic, setProfilePic] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const fetchImage = async () => {
     try {
@@ -29,6 +31,7 @@ const Profile = () => {
   };
 
   const submitImage = async () => {
+    setLoading(true);
     try {
       setText('uploading...');
 
@@ -46,13 +49,12 @@ const Profile = () => {
         setProfilePic(previewUrl);
       }
       setText('media uploaded');
-
-      // navigate('/', { replace: true });
     } catch (error) {
       setText(error.message);
       console.log(error);
     } finally {
       setPreviewUrl(undefined);
+      setLoading(false);
     }
   };
 
@@ -104,7 +106,7 @@ const Profile = () => {
         </div>
         <input
           type='file'
-          accept='image/jpg'
+          accept='image/jpeg, image/png'
           onChange={handleFileChange}
           ref={fileInputRef}
           style={{ display: 'none' }}
@@ -136,13 +138,17 @@ const Profile = () => {
         )}
       </div>
       {previewUrl && (
-        <div className='flex w-[40%] gap-4'>
+        <div className='flex justify-center items-end mt-6 w-[40%] gap-4 h-10'>
           <button
-            className='bg-black border border-white rounded-md text-white font-bold p-2 hover:bg-white hover:text-black transition-colors duration-300 mt-10 w-[45%]'
             onClick={submitImage}
+            className={`bg-black border border-white rounded-md text-white font-bold p-2 ${
+              !loading && 'hover:bg-white hover:text-black'
+            } transition-colors duration-300 w-[45%] h-10`}
+            disabled={loading}
           >
-            Update
+            {loading ? <Ring size={18} /> : <> Update </>}
           </button>
+
           <button
             className='bg-white border border-white rounded-md text-black font-bold p-2 hover:bg-black hover:text-white transition-colors duration-300 mt-10 w-[45%]'
             onClick={() => setPreviewUrl(undefined)}

@@ -3,6 +3,7 @@ import { FaFileImage } from 'react-icons/fa';
 import axios from 'axios';
 import { FiPaperclip } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import Ring from '../components/loading/ring';
 
 function UploadImage() {
   const navigate = useNavigate();
@@ -11,12 +12,10 @@ function UploadImage() {
   const [previewUrl, setPreviewUrl] = useState(undefined);
   const fileInputRef = useRef(null);
   const [type, setType] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const submitImage = async () => {
-    const size = file.size / (1024 * 1024);
-    if (size > 3) {
-      setType('lol');
-    }
+    setLoading(true);
 
     try {
       setType('uploading...');
@@ -45,6 +44,8 @@ function UploadImage() {
     } catch (error) {
       setType(error.message);
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,7 +100,7 @@ function UploadImage() {
         <pre>{type}</pre>
         <input
           type='file'
-          accept='image/jpg'
+          accept='image/jpeg, image/png, video/mp4'
           onChange={handleFileChange}
           ref={fileInputRef}
           style={{ display: 'none' }}
@@ -121,9 +122,12 @@ function UploadImage() {
         </div>
         <button
           onClick={submitImage}
-          className='bg-black border border-white rounded-md text-white font-bold p-4 px-32 hover:bg-white hover:text-black transition-colors duration-300'
+          className={`bg-black border border-white rounded-md text-white font-bold p-4 px-32 ${
+            !loading && 'hover:bg-white hover:text-black'
+          } transition-colors duration-300 w-[100%]`}
+          disabled={loading}
         >
-          Submit
+          {loading ? <Ring size={22} /> : <> Submit </>}
         </button>
       </div>
     </div>

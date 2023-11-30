@@ -4,7 +4,7 @@ import { TbDownload } from 'react-icons/tb';
 import { useSelector } from 'react-redux';
 
 const Post = ({ post, data, setData }) => {
-  const mediaType = post.mediaType.split('/')[0];
+  const mediaType = post.mediaType ? post.mediaType.split('/')[0] : null;
   const state = useSelector((store) => store.account.userProfile);
 
   const deletePost = async (id) => {
@@ -18,6 +18,10 @@ const Post = ({ post, data, setData }) => {
       setData(filteredPosts);
     }
   };
+
+  if (!post) {
+    return;
+  }
 
   return (
     <div key={post.id} className='rounded-md border border-[#252525] p-0'>
