@@ -73,7 +73,7 @@ const Post = ({ post, data, setData }) => {
     }
   };
 
-  if (!post) {
+  if (!post || !state) {
     return;
   }
 
@@ -107,7 +107,7 @@ const Post = ({ post, data, setData }) => {
           autoplay
           loop
           controlsList='nodownload'
-          className='rounded-sm overflow-hidden min-h-[20rem] object-cover'
+          className='rounded-sm overflow-hidden min-h-[20rem] object-cover max-h-[80vh] w-[100%]'
         />
       )}
 

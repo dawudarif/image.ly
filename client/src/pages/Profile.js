@@ -1,26 +1,26 @@
-import { FiUser } from 'react-icons/fi';
-import { useSelector } from 'react-redux';
-import { GrGallery } from 'react-icons/gr';
-import { useEffect, useRef, useState } from 'react';
-import { FaPlus } from 'react-icons/fa6';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import ProfilePosts from '../components/Profile/ProfilePosts';
-import Ring from '../components/loading/ring';
+import { FiUser } from "react-icons/fi";
+import { useSelector } from "react-redux";
+import { GrGallery } from "react-icons/gr";
+import { useEffect, useRef, useState } from "react";
+import { FaPlus } from "react-icons/fa6";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import ProfilePosts from "../components/Profile/ProfilePosts";
+import Ring from "../components/loading/ring";
 
 const Profile = () => {
   const state = useSelector((store) => store.account.userProfile);
 
   const [file, setFile] = useState(undefined);
   const [previewUrl, setPreviewUrl] = useState(undefined);
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const fileInputRef = useRef(null);
   const [profilePic, setProfilePic] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const fetchImage = async () => {
     try {
-      const response = await axios.get('/api/users/profile-pic', {
+      const response = await axios.get("/api/users/profile-pic", {
         withCredentials: true,
       });
 
@@ -33,22 +33,22 @@ const Profile = () => {
   const submitImage = async () => {
     setLoading(true);
     try {
-      setText('uploading...');
+      setText("uploading...");
 
       const formData = new FormData();
-      formData.append('image', file);
+      formData.append("image", file);
 
-      const response = await axios.put('/api/users/update-user', formData, {
+      const response = await axios.put("/api/users/update-user", formData, {
         withCredentials: true,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
 
       if (response.data.success) {
         setProfilePic(previewUrl);
       }
-      setText('media uploaded');
+      setText("media uploaded");
     } catch (error) {
       setText(error.message);
       console.log(error);
@@ -62,7 +62,7 @@ const Profile = () => {
     const file = e.target.files?.[0] ?? null;
     const size = file?.size / (1024 * 1024);
     if (size > 3) {
-      setText('File should be smaller than 3Mbs');
+      setText("File should be smaller than 3Mbs");
       setFile(undefined);
     } else {
       setFile(file);
@@ -95,30 +95,30 @@ const Profile = () => {
   if (!state) return;
 
   return (
-    <div className='bg-black min-h-[100vh] w-[100%] py-4 flex items-center flex-col'>
-      <p className='text-white font-mono'>{text}</p>
-      <div className='flex justify-between mt-10 w-[40%]'>
-        <div className='text-white'>
-          <h4 className='text-lg font-sans font-semibold'>{state.name}</h4>
-          <h6 className='text-base font-sans font-semibold italic'>
+    <div className="xs:px-4 flex min-h-[100vh] w-[100%] flex-col items-center bg-black py-4">
+      <p className="font-mono text-white">{text}</p>
+      <div className="xs:w-full  mt-10 flex justify-between sm:w-[80%] md:w-[50%] lg:w-[40%]">
+        <div className="text-white">
+          <h4 className="font-sans text-lg font-semibold">{state.name}</h4>
+          <h6 className="font-sans text-base font-semibold italic">
             @{state.username}
           </h6>
         </div>
         <input
-          type='file'
-          accept='image/jpeg, image/png'
+          type="file"
+          accept="image/jpeg, image/png"
           onChange={handleFileChange}
           ref={fileInputRef}
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
         />
 
         {previewUrl ? (
           <>
             <img
               src={previewUrl}
-              alt='new'
+              alt="new"
               onDoubleClick={() => fileInputRef.current.click()}
-              className='rounded-[50%] border border-[#252525] h-24 w-24 object-cover'
+              className="h-24 w-24 rounded-[50%] border border-[#252525] object-cover"
             />
           </>
         ) : profilePic ? (
@@ -126,42 +126,42 @@ const Profile = () => {
             src={profilePic}
             alt={state.name}
             onDoubleClick={() => fileInputRef.current.click()}
-            className='rounded-[50%] border border-[#252525] h-24 w-24 object-cover'
+            className="h-24 w-24 rounded-[50%] border border-[#252525] object-cover"
           />
         ) : (
           <div
-            className='rounded-[50%] border border-[#252525] h-24 w-24 flex justify-center items-center'
+            className="flex h-24 w-24 items-center justify-center rounded-[50%] border border-[#252525]"
             onDoubleClick={() => fileInputRef.current.click()}
           >
-            <FiUser size={35} color='#252525' />
+            <FiUser size={35} color="#252525" />
           </div>
         )}
       </div>
       {previewUrl && (
-        <div className='flex justify-center items-end mt-6 w-[40%] gap-4 h-10'>
+        <div className="xs:w-full mt-6 flex h-10 items-end  justify-center gap-4 sm:w-[80%] md:w-[50%] lg:w-[40%]">
           <button
             onClick={submitImage}
-            className={`bg-black border border-white rounded-md text-white font-bold p-2 ${
-              !loading && 'hover:bg-white hover:text-black'
-            } transition-colors duration-300 w-[45%] h-10`}
+            className={`rounded-md border border-white bg-black p-2 font-bold text-white ${
+              !loading && "hover:bg-white hover:text-black"
+            } h-10 w-[45%] transition-colors duration-300`}
             disabled={loading}
           >
             {loading ? <Ring size={18} /> : <> Update </>}
           </button>
 
           <button
-            className='bg-white border border-white rounded-md text-black font-bold p-2 hover:bg-black hover:text-white transition-colors duration-300 mt-10 w-[45%]'
+            className="mt-10 w-[45%] rounded-md border border-white bg-white p-2 font-bold text-black transition-colors duration-300 hover:bg-black hover:text-white"
             onClick={() => setPreviewUrl(undefined)}
           >
             Cancel
           </button>
         </div>
       )}
-      <div className='w-[40%] mt-[5rem]'>
-        <div className='border-b border-[#252525] text-white w-[100%] flex justify-around items-center p-4'>
-          <GrGallery size={30} color='white' />
-          <Link to='/new-post'>
-            <FaPlus size={30} color='#252525' />
+      <div className="xs:w-full mt-[5rem] sm:w-[80%] md:w-[50%] lg:w-[40%]">
+        <div className="flex w-[100%] items-center justify-around border-b border-[#252525] p-4 text-white">
+          <GrGallery size={30} color="white" />
+          <Link to="/new-post">
+            <FaPlus size={30} color="#252525" />
           </Link>
         </div>
         <ProfilePosts />
