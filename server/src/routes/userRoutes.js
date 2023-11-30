@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import {
   authUser,
+  getProfilePic,
   getUserProfile,
   logoutUser,
   registerUser,
@@ -18,6 +19,7 @@ router.post('/register', registerUser);
 router.post('/auth', authUser);
 router.route('/logout').get(protect, logoutUser);
 router.route('/profile').get(protect, getUserProfile);
+router.route('/profile-pic').get(protect, getProfilePic);
 router
   .route('/update-user')
   .put(protect, upload.single('image'), updateProfilePic);

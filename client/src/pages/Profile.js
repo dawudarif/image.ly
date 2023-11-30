@@ -1,19 +1,31 @@
 import { FiUser } from 'react-icons/fi';
 import { useSelector } from 'react-redux';
 import { GrGallery } from 'react-icons/gr';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { FaPlus } from 'react-icons/fa6';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Profile = () => {
   const state = useSelector((store) => store.account.userProfile);
 
   const [file, setFile] = useState(undefined);
-  const [caption, setCaption] = useState('');
   const [previewUrl, setPreviewUrl] = useState(undefined);
   const [text, setText] = useState('');
   const fileInputRef = useRef(null);
+  const [profilePic, setProfilePic] = useState(null);
 
   const myPosts = async () => {};
+
+  const fetchImage = async () => {
+    try {
+      const response = await axios.get('/api/users/profile-pic', {
+        withCredentials: true,
+      });
+
+      setProfilePic(response.data);
+    } catch (error) {}
+  };
 
   const submitImage = async () => {
     try {
@@ -30,15 +42,16 @@ const Profile = () => {
       });
 
       if (response.data.success) {
-        console.log(response);
+        setProfilePic(previewUrl);
       }
-
       setText('media uploaded');
 
       // navigate('/', { replace: true });
     } catch (error) {
       setText(error.message);
-      console.log(error);
+      // console.log(error);
+    } finally {
+      setPreviewUrl(undefined);
     }
   };
 
@@ -61,6 +74,20 @@ const Profile = () => {
       }
     }
   };
+
+  useEffect(() => {
+    fetchImage();
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setText(false);
+    }, 3000);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [text]);
 
   if (!state) return;
 
@@ -91,9 +118,9 @@ const Profile = () => {
               className='rounded-[50%] border border-[#252525] h-24 w-24 object-cover'
             />
           </>
-        ) : state.image ? (
+        ) : profilePic ? (
           <img
-            src={state.image}
+            src={profilePic}
             alt={state.name}
             onDoubleClick={() => fileInputRef.current.click()}
             className='rounded-[50%] border border-[#252525] h-24 w-24 object-cover'
@@ -124,8 +151,11 @@ const Profile = () => {
         </div>
       )}
       <div className='w-[40%] mt-[5rem]'>
-        <div className='border-b border-[#252525] text-white w-[100%] flex justify-center items-center gap-6 p-4'>
+        <div className='border-b border-[#252525] text-white w-[100%] flex justify-around items-center p-4'>
           <GrGallery size={30} color='#252525' />
+          <Link to='/upload'>
+            <FaPlus size={30} color='#252525' />
+          </Link>
         </div>
       </div>
     </div>

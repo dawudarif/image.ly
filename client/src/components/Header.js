@@ -3,9 +3,11 @@ import { FiPaperclip } from 'react-icons/fi';
 import { FiUser } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { IoLogOutOutline } from 'react-icons/io5';
+import { useSelector } from 'react-redux';
 
 const Header = () => {
   const size = 30;
+  const state = useSelector((store) => store.account.userProfile);
 
   return (
     <div className='bg-black flex justify-center items-center py-6 gap-8 border-b border-[#252525] relative'>
@@ -21,9 +23,11 @@ const Header = () => {
       <Link to='/profile'>
         <FiUser size={size} color='white' />
       </Link>
-      <div>
-        <IoLogOutOutline size={size} color='white' />
-      </div>
+      {state && (
+        <div>
+          <IoLogOutOutline size={size} color='white' />
+        </div>
+      )}
     </div>
   );
 };
