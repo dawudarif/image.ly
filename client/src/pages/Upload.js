@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FaFileImage } from "react-icons/fa";
 import axios from "axios";
 import { FiPaperclip } from "react-icons/fi";
@@ -11,14 +11,14 @@ function UploadImage() {
   const [caption, setCaption] = useState("");
   const [previewUrl, setPreviewUrl] = useState(undefined);
   const fileInputRef = useRef(null);
-  const [type, setType] = useState("");
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const submitImage = async () => {
     setLoading(true);
 
     try {
-      setType("uploading...");
+      setMessage("uploading...");
 
       const api = await axios.get(
         `/api/posts/get-upload-url?type=${file?.type}`,
@@ -38,11 +38,11 @@ function UploadImage() {
 
       await axios.post(`/api/posts/create-post`, data);
 
-      setType("media uploaded");
+      setMessage("media uploaded");
 
       navigate("/", { replace: true });
     } catch (error) {
-      setType(error.message);
+      setMessage(error.message);
       console.log(error);
     } finally {
       setLoading(false);
@@ -53,7 +53,7 @@ function UploadImage() {
     const file = e.target.files?.[0] ?? null;
     const size = file?.size / (1024 * 1024);
     if (size > 3) {
-      setType("File should be smaller than 3Mbs");
+      setMessage("File should be smaller than 3Mbs");
       setFile(undefined);
     } else {
       setFile(file);
@@ -70,7 +70,7 @@ function UploadImage() {
   };
 
   return (
-    <div className="xs:flex-col xs:gap-2 flex h-[100vh] flex-row items-center justify-center gap-6 bg-black text-white sm:flex-col sm:gap-2">
+    <div className="flex h-[90vh] flex-row items-center justify-center gap-6 bg-black text-white sm:flex-col sm:gap-2 xs:flex-col xs:gap-2">
       <div>
         {previewUrl && file ? (
           <div className="mt-4">
@@ -97,7 +97,7 @@ function UploadImage() {
         )}
       </div>
       <div className="flex flex-col items-baseline justify-center gap-6">
-        <pre>{type}</pre>
+        <pre>{message}</pre>
         <input
           type="file"
           accept="image/jpeg, image/png, video/mp4"

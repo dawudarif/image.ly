@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import { fetchUserProfile } from "./features/account";
@@ -21,12 +21,19 @@ const Fallback = () => (
 
 function App() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchUserProfile());
   }, []);
 
   const state = useSelector((store) => store.account.userProfile);
+
+  useEffect(() => {
+    if (!state) {
+      navigate("/login");
+    }
+  }, [state]);
 
   if (!state) {
     <div className="h-[100vh] bg-black"></div>;

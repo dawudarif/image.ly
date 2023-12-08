@@ -1,11 +1,11 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 export const fetchUserProfile = createAsyncThunk(
-  'user/fetchUserProfile',
+  "user/fetchUserProfile",
   async (name, thunkAPI) => {
     try {
-      const response = await axios.get('/api/users/profile', {
+      const response = await axios.get("/api/users/profile", {
         withCredentials: true,
       });
 
@@ -13,17 +13,17 @@ export const fetchUserProfile = createAsyncThunk(
     } catch (error) {
       console.log(error);
       return thunkAPI.rejectWithValue(
-        'Something went wrong please try again later.',
+        "Something went wrong please try again later.",
       );
     }
   },
 );
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState: {
     userProfile: undefined,
-    loading: 'idle',
+    loading: "idle",
     error: undefined,
     image: null,
   },
@@ -31,14 +31,14 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserProfile.pending, (state) => {
-        state.loading = 'pending';
+        state.loading = "pending";
       })
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
-        state.loading = 'succeeded';
+        state.loading = "succeeded";
         state.userProfile = action.payload;
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
-        state.loading = 'failed';
+        state.loading = "failed";
         state.error = action.payload;
       });
   },

@@ -95,9 +95,9 @@ const Profile = () => {
   if (!state) return;
 
   return (
-    <div className="xs:px-4 flex min-h-[100vh] w-[100%] flex-col items-center bg-black py-4">
+    <div className="flex min-h-[100vh] w-[100%] flex-col items-center bg-black py-4 xs:px-4">
       <p className="font-mono text-white">{text}</p>
-      <div className="xs:w-full  mt-10 flex w-[40%] justify-between sm:w-[80%] md:w-[50%]">
+      <div className="mt-10  flex w-[40%] justify-between sm:w-[80%] md:w-[50%] xs:w-full">
         <div className="text-white">
           <h4 className="font-sans text-lg font-semibold">{state.name}</h4>
           <h6 className="font-sans text-base font-semibold italic">
@@ -138,7 +138,7 @@ const Profile = () => {
         )}
       </div>
       {previewUrl && (
-        <div className="xs:w-full mt-6 flex h-10 items-end  justify-center gap-4 sm:w-[80%] md:w-[50%] lg:w-[40%]">
+        <div className="mt-6 flex h-10 items-end justify-center  gap-4 sm:w-[80%] md:w-[50%] lg:w-[40%] xs:w-full">
           <button
             onClick={submitImage}
             className={`rounded-md border border-white bg-black p-2 font-bold text-white ${
@@ -157,7 +157,7 @@ const Profile = () => {
           </button>
         </div>
       )}
-      <div className="xs:w-full mt-[5rem] w-[40%] sm:w-[80%] md:w-[50%]">
+      <div className="mt-[5rem] w-[40%] sm:w-[80%] md:w-[50%] xs:w-full">
         <div className="flex w-[100%] items-center justify-around border-b border-[#252525] p-4 text-white">
           <GrGallery size={30} color="white" />
           <Link to="/new-post">

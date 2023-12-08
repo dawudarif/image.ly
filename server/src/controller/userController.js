@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '../../prisma/prisma.js';
 import { deleteImage, getImage, uploadFile } from '../s3.js';
 import { generateToken } from '../utils/generateToken.js';
+import sharp from 'sharp';
 
 export const authUser = async (req, res) => {
   const { email, password } = req.body;
@@ -122,7 +123,6 @@ export const getProfilePic = async (req, res) => {
 
 export const updateProfilePic = async (req, res) => {
   const fileBuffer = req.file.buffer;
-  const mimeType = req.file.mimetype;
 
   const key = req.user.imgUrl;
 
@@ -130,7 +130,18 @@ export const updateProfilePic = async (req, res) => {
     await deleteImage(key);
   }
 
-  const upload = await uploadFile(fileBuffer, mimeType);
+  const resizedImageBuffer = await sharp(fileBuffer)
+    .resize({
+      width: 320,
+      height: 320,
+      fit: 'cover', // Adjust as needed (cover or contain)
+    })
+    .jpeg({ quality: 65 }) // Adjust quality (0-100) as needed
+    .toBuffer({ resolveWithObject: true }); // Use resolveWithObject to get metadata
+
+  const mimeType = resizedImageBuffer.info.format;
+
+  const upload = await uploadFile(resizedImageBuffer.data, mimeType);
 
   await prisma.account.update({
     where: {

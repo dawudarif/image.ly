@@ -16,12 +16,22 @@ const Home = () => {
 
   return (
     <div className="flex min-h-[100vh] justify-center bg-black py-4">
-      <div className="xs:w-[98vw] mt-4 flex h-auto w-[30rem] flex-col gap-4">
-        {data.map((post) => (
-          <div key={post.id}>
-            <Post post={post} data={data} setData={(items) => setData(items)} />
+      <div className="mt-4 flex h-auto w-[30rem] flex-col gap-4 xs:w-[98vw]">
+        {data.length === 0 ? (
+          <div className="text-center font-mono text-[1.2rem] text-white">
+            No Posts
           </div>
-        ))}
+        ) : (
+          data.map((post) => (
+            <div key={post.id}>
+              <Post
+                post={post}
+                data={data}
+                setData={(items) => setData(items)}
+              />
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
