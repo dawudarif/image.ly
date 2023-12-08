@@ -81,14 +81,15 @@ export const myPosts = async (req, res) => {
 export const createPost = async (req, res) => {
   const { text, media, mediaType } = req.body;
 
-  if (!text || !media || !mediaType) {
+  if (!media || !mediaType) {
     res.status(400).send('Insufficient data');
+    return;
   }
 
   const post = await prisma.post.create({
     data: {
       createdById: req.user.id,
-      caption: text,
+      ...(text && { caption: text }),
       media,
       mediaType,
     },

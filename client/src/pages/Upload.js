@@ -4,6 +4,7 @@ import axios from "axios";
 import { FiPaperclip } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import Ring from "../components/loading/ring";
+import imageCompression from "browser-image-compression";
 
 function UploadImage() {
   const navigate = useNavigate();
@@ -49,14 +50,18 @@ function UploadImage() {
     }
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files?.[0] ?? null;
     const size = file?.size / (1024 * 1024);
     if (size > 3) {
       setMessage("File should be smaller than 3Mbs");
       setFile(undefined);
     } else {
-      setFile(file);
+      const compressedFile = await imageCompression(file, {
+        useWebWorker: true,
+        maxWidthOrHeight: Math.max(640, 450),
+      });
+      setFile(compressedFile);
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
       }
