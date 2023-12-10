@@ -1,16 +1,16 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import Ring from '../components/loading/ring';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import Ring from "../components/loading/ring";
 
 const Register = () => {
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [username, setUserName] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [username, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const registerUser = async (e) => {
@@ -18,18 +18,18 @@ const Register = () => {
     setLoading(true);
     try {
       if (password !== confirmPassword) {
-        setError('Passwords do not match');
+        setError("Passwords do not match");
         return;
       }
       const body = { email, password, username, name };
-      const response = await axios.post('/api/users/register', body, {
+      const response = await axios.post("/api/users/register", body, {
         withCredentials: true,
       });
 
       if (response.status !== 201) {
         setError(response.data);
       }
-      window.location.href = '/';
+      window.location.href = "/";
     } catch (error) {
       setError(error.response.data.error);
     } finally {
@@ -38,55 +38,55 @@ const Register = () => {
   };
 
   return (
-    <div className='bg-black min-h-[100vh] flex justify-center py-12'>
-      <form className='flex  items-center flex-col gap-6 w-[30%]'>
+    <div className="flex min-h-[100vh] justify-center bg-black py-12">
+      <form className="flex w-[30%] flex-col items-center justify-center gap-6 sm:w-[90%] md:w-[50%] xs:w-[90%]">
         <input
-          type='text'
+          type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder='enter name'
-          className='bg-black border border-white rounded-md text-white font-medium p-4 px-6 w-[100%]'
+          placeholder="enter name"
+          className="w-[100%] rounded-md border border-white bg-black p-4 px-6 font-medium text-white"
         />
         <input
-          type='text'
+          type="text"
           value={username}
           onChange={(e) => setUserName(e.target.value)}
-          placeholder='@username'
-          className='bg-black border border-white rounded-md text-white font-medium p-4 px-6 w-[100%]'
+          placeholder="@username"
+          className="w-[100%] rounded-md border border-white bg-black p-4 px-6 font-medium text-white"
         />
         <input
-          type='email'
+          type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder='enter email'
-          className='bg-black border border-white rounded-md text-white font-medium p-4 px-6 w-[100%]'
+          placeholder="enter email"
+          className="w-[100%] rounded-md border border-white bg-black p-4 px-6 font-medium text-white"
         />
         <input
-          type='password'
+          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder='enter password'
-          className='bg-black border border-white rounded-md text-white font-medium p-4 px-6 w-[100%]'
+          placeholder="enter password"
+          className="w-[100%] rounded-md border border-white bg-black p-4 px-6 font-medium text-white"
         />
         <input
-          type='password'
+          type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder='confirm password'
-          className='bg-black border border-white rounded-md text-white font-medium p-4 px-6 w-[100%]'
+          placeholder="confirm password"
+          className="w-[100%] rounded-md border border-white bg-black p-4 px-6 font-medium text-white"
         />
-        <p className='text-white font-mono'>{error}</p>
+        <p className="font-mono text-white">{error}</p>
         <button
           onClick={registerUser}
-          className={`bg-black border border-white rounded-md text-white font-bold p-4 px-32 ${
-            !loading && 'hover:bg-white hover:text-black'
-          } transition-colors duration-300 w-[100%]`}
+          className={`rounded-md border border-white bg-black p-4 px-32 text-center font-bold text-white ${
+            !loading && "hover:bg-white hover:text-black"
+          } w-[100%] transition-colors duration-300`}
           disabled={loading}
         >
           {loading ? <Ring size={22} /> : <> Register </>}
         </button>
 
-        <Link to='/login' className='text-white hover:underline italic'>
+        <Link to="/login" className="italic text-white hover:underline">
           Already a user? Login here.
         </Link>
       </form>

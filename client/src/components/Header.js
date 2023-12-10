@@ -1,8 +1,8 @@
 import { MdOutlineHome } from "react-icons/md";
 import { FiPaperclip } from "react-icons/fi";
 import { FiUser } from "react-icons/fi";
-import { Link } from "react-router-dom";
 import { IoLogOutOutline } from "react-icons/io5";
+import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
@@ -22,23 +22,52 @@ const Header = () => {
   };
 
   return (
-    <div className="relative flex items-center justify-center gap-8 border-b border-[#252525] bg-black py-6">
-      <h1 className="xs:hidden absolute left-6 block font-mono text-[1.5rem] font-semibold text-white">
+    <div className="relative flex items-center justify-center gap-8 border-b border-[#252525] bg-black py-4">
+      <h1 className="absolute left-6 block font-mono text-[1.5rem] font-semibold text-white xs:hidden">
         Image.ly
       </h1>
-      <Link to="/">
+      <NavLink
+        to="/"
+        className={({ isActive }) =>
+          isActive ? "rounded-lg bg-[#252525] p-1" : "p-1"
+        }
+      >
         <MdOutlineHome size={size + 6} color="white" />
-      </Link>
-      <Link to="/new-post">
+      </NavLink>
+      <NavLink
+        to="/new-post"
+        className={({ isActive }) =>
+          isActive ? "rounded-lg bg-[#252525] p-2 " : "p-2"
+        }
+      >
         <FiPaperclip size={size} color="white" />
-      </Link>
-      <Link to="/profile">
-        <FiUser size={size} color="white" />
-      </Link>
-      {state && (
-        <div onClick={() => logoutUser()}>
-          <IoLogOutOutline size={size} color="white" />
-        </div>
+      </NavLink>
+
+      {state ? (
+        <>
+          <NavLink
+            to="/profile"
+            className={({ isActive }) =>
+              isActive ? "rounded-lg bg-[#252525] p-2" : "p-2"
+            }
+          >
+            <FiUser size={size} color="white" />
+          </NavLink>
+          <div onClick={() => logoutUser()}>
+            <IoLogOutOutline size={size} color="white" />
+          </div>
+        </>
+      ) : (
+        <NavLink
+          to="/login"
+          className={({ isActive, isPending }) =>
+            isActive
+              ? "rounded-lg bg-[#252525] p-2 font-mono text-[1.1rem] font-bold text-white"
+              : "p-2 font-mono text-[1.1rem] font-bold text-white"
+          }
+        >
+          login / register
+        </NavLink>
       )}
     </div>
   );

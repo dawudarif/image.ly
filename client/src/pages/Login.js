@@ -27,7 +27,7 @@ const Login = () => {
 
   return (
     <div className="flex min-h-[100vh] justify-center bg-black py-4">
-      <form className="flex w-[30%] flex-col items-center justify-center gap-6">
+      <form className="flex w-[30%] flex-col items-center justify-center gap-6 sm:w-[90%] md:w-[50%] xs:w-[90%]">
         <input
           type="email"
           value={email}
@@ -45,7 +45,7 @@ const Login = () => {
         <p className="font-mono text-white">{error}</p>
         <button
           onClick={loginUser}
-          className={`rounded-md border border-white bg-black p-4 px-32 font-bold text-white ${
+          className={`rounded-md border border-white bg-black p-4 px-32 text-center font-bold text-white ${
             !loading && "hover:bg-white hover:text-black"
           } w-[100%] transition-colors duration-300`}
           disabled={loading}

@@ -21,19 +21,12 @@ const Fallback = () => (
 
 function App() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchUserProfile());
   }, []);
 
   const state = useSelector((store) => store.account.userProfile);
-
-  useEffect(() => {
-    if (!state) {
-      navigate("/login");
-    }
-  }, [state]);
 
   if (!state) {
     <div className="h-[100vh] bg-black"></div>;
