@@ -1,9 +1,13 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Ring from "../components/loading/ring";
+import { useSelector } from "react-redux";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const state = useSelector((store) => store.account.userProfile);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,11 +23,17 @@ const Login = () => {
 
     if (req.status >= 200 && req.status <= 299) {
       setLoading(false);
-      window.location.href = "/";
+      navigate("/");
     } else {
       setError("Something went wrong. Please try again later.");
     }
   };
+
+  useEffect(() => {
+    if (state) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="flex min-h-[100vh] justify-center bg-black py-4">

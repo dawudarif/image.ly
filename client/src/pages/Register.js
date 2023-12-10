@@ -1,10 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Ring from "../components/loading/ring";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const state = useSelector((store) => store.account.userProfile);
+
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [username, setUserName] = useState("");
@@ -29,13 +32,19 @@ const Register = () => {
       if (response.status !== 201) {
         setError(response.data);
       }
-      window.location.href = "/";
+      navigate("/");
     } catch (error) {
       setError(error.response.data.error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (state) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="flex min-h-[100vh] justify-center bg-black py-12">

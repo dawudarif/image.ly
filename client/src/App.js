@@ -1,11 +1,11 @@
 import React, { Suspense, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import Ring from "./components/loading/ring";
 import { fetchUserProfile } from "./features/account";
 import "./index.css";
-import Ring from "./components/loading/ring";
 
 const Home = React.lazy(() => import("./pages/Home"));
 const UploadImage = React.lazy(() => import("./pages/Upload"));
@@ -25,12 +25,6 @@ function App() {
   useEffect(() => {
     dispatch(fetchUserProfile());
   }, []);
-
-  const state = useSelector((store) => store.account.userProfile);
-
-  if (!state) {
-    <div className="h-[100vh] bg-black"></div>;
-  }
 
   return (
     <>
