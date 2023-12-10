@@ -32,7 +32,7 @@ const Register = () => {
       if (response.status !== 201) {
         setError(response.data);
       }
-      navigate("/");
+      window.location.href = "/";
     } catch (error) {
       setError(error.response.data.error);
     } finally {

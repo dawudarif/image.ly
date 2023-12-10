@@ -17,15 +17,21 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     const body = { email, password };
-    const req = await axios.post("/api/users/auth", body, {
-      withCredentials: true,
-    });
-
-    if (req.status >= 200 && req.status <= 299) {
+    try {
+      const req = await axios.post("/api/users/auth", body, {
+        withCredentials: true,
+      });
+      console.log(req.status);
+      if (req.status >= 200 && req.status <= 299) {
+        window.location.href = "/";
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
+    } catch (error) {
+      console.log(error);
+      setError("An error occurred. Please try again later.");
+    } finally {
       setLoading(false);
-      navigate("/");
-    } else {
-      setError("Something went wrong. Please try again later.");
     }
   };
 
