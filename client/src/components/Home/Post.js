@@ -13,16 +13,20 @@ const Post = ({ post, data, setData }) => {
     const filteredPosts = data.filter((post) => id !== post.id);
     setData(filteredPosts);
     try {
-      const post = await axios.delete(`/api/posts/delete-post/${id}`, {
+      const response = await axios.delete(`/api/posts/delete-post/${id}`, {
         withCredentials: true,
       });
 
-      const deleteId = post.data.id;
+      const deleteId = response.data.id;
 
-      if (deleteId === id) {
-        return;
+      if (response.status === 200) {
+        if (deleteId === id) {
+          return;
+        } else {
+          setData(initialData);
+        }
       } else {
-        setData(initialData);
+        throw new Error();
       }
     } catch (error) {
       setData(initialData);
@@ -30,28 +34,54 @@ const Post = ({ post, data, setData }) => {
   };
 
   const likePost = async (id) => {
-    const post = await axios.put(`/api/posts/add-like/${id}`, {
-      withCredentials: true,
+    const initialData = [...data];
+
+    const generatedId = "random-id-" + Math.random();
+
+    const updatedData = data.map((post) => {
+      if (post.id === id) {
+        return {
+          ...post,
+          _count: { likes: post._count.likes + 1 },
+          likes: {
+            id: generatedId,
+            accountId: state.id,
+          },
+        };
+      }
+      return post;
     });
 
-    const response = post.data;
+    setData(updatedData);
 
-    if (response) {
-      const updatedData = data.map((post) => {
-        if (post.id === response.postId) {
-          return {
-            ...post,
-            _count: { likes: post._count.likes + 1 },
-            likes: {
-              id: response.id,
-              accountId: response.accountId,
-            },
-          };
-        }
-        return post;
+    try {
+      const post = await axios.put(`/api/posts/add-like/${id}`, {
+        withCredentials: true,
       });
 
-      setData(updatedData);
+      const response = post.data;
+
+      if (response && post.status === 200) {
+        const updatedData = initialData.map((post) => {
+          if (post.id === response.postId) {
+            return {
+              ...post,
+              _count: { likes: post._count.likes + 1 },
+              likes: {
+                id: response.id,
+                accountId: response.accountId,
+              },
+            };
+          }
+          return post;
+        });
+
+        setData(updatedData);
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      setData(initialData);
     }
   };
 
