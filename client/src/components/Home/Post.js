@@ -9,16 +9,23 @@ const Post = ({ post, data, setData }) => {
   const state = useSelector((store) => store.account.userProfile);
 
   const deletePost = async (id) => {
-    const post = await axios.delete(`/api/posts/delete-post/${id}`, {
-      withCredentials: true,
-    });
+    const initialData = [...data];
+    const filteredPosts = data.filter((post) => id !== post.id);
+    setData(filteredPosts);
+    try {
+      const post = await axios.delete(`/api/posts/delete-post/${id}`, {
+        withCredentials: true,
+      });
 
-    const deleteId = post.data.id;
+      const deleteId = post.data.id;
 
-    if (deleteId) {
-      const filteredPosts = data.filter((post) => deleteId !== post.id);
-
-      setData(filteredPosts);
+      if (deleteId === id) {
+        return;
+      } else {
+        setData(initialData);
+      }
+    } catch (error) {
+      setData(initialData);
     }
   };
 
@@ -80,7 +87,7 @@ const Post = ({ post, data, setData }) => {
   const liked = post.likes && post.likes?.accountId === state.id;
 
   return (
-    <div key={post.id} className="rounded-md border border-[#252525] p-0">
+    <div key={post.id} className="rounded-xl border border-[#252525] p-0 ">
       <div className="flex items-center justify-start gap-2 p-2">
         <img
           src={post.createdBy.imgUrl}
