@@ -51,6 +51,7 @@ function UploadImage() {
   };
 
   const handleFileChange = async (e) => {
+    setMessage("");
     const file = e.target.files?.[0] ?? null;
     const size = file?.size / (1024 * 1024);
     if (size > 3) {
@@ -59,7 +60,8 @@ function UploadImage() {
     } else {
       const compressedFile = await imageCompression(file, {
         useWebWorker: true,
-        maxWidthOrHeight: Math.max(640, 450),
+        // maxWidthOrHeight: Math.max(640, 450),
+        maxSizeMB: 0.45,
       });
       setFile(compressedFile);
       if (previewUrl) {

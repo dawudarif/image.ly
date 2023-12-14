@@ -1,38 +1,29 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import Post from "../components/Home/Post";
+import React, { useCallback, useRef, useState } from "react";
 import { IoRefreshSharp } from "react-icons/io5";
+import Post from "../components/Home/Post";
 import Ring from "../components/loading/ring";
+import useFetchData from "../hooks/useFetchData";
 
 const Home = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [page, setPage] = useState(1);
 
-  const getData = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get("/api/posts/get-posts");
-      if (response.status >= 200 && response.status <= 299) {
-        setData(response.data);
-      } else {
-        throw new error();
-      }
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data, loading, postLoading, error, fetchNew, setData } =
+    useFetchData(page);
 
-  const refreshFeed = () => {
-    setError(false);
-    getData();
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
+  const observer = useRef();
+  const lastElementRef = useCallback(
+    (node) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && fetchNew) {
+          setPage((prev) => prev + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, fetchNew],
+  );
 
   if (loading || error) {
     return (
@@ -47,7 +38,7 @@ const Home = () => {
               </h4>
               <div
                 className="w-max rounded-md p-4 transition-all duration-300 hover:bg-[#252525]"
-                onClick={() => refreshFeed()}
+                // onClick={() => refreshFeed()}
               >
                 <IoRefreshSharp size={30} color="white" />
               </div>
@@ -59,22 +50,43 @@ const Home = () => {
   }
 
   return (
-    <div className="flex min-h-[100vh] justify-center bg-black py-4">
-      <div className="mt-4 flex h-auto w-[30rem] flex-col gap-4 xs:w-[98vw]">
+    <div className="flex h-max justify-center bg-black py-4">
+      <div className="mt-4 flex h-max w-[30rem] flex-col gap-4 xs:w-[98vw]">
         {data.length === 0 ? (
           <div className="text-center font-mono text-[1.2rem] text-white">
             No Posts
           </div>
         ) : (
-          data.map((post) => (
-            <div key={post.id}>
-              <Post
-                post={post}
-                data={data}
-                setData={(items) => setData(items)}
-              />
-            </div>
-          ))
+          <>
+            {data.map((post, index) => {
+              if (data.length === index + 1) {
+                return (
+                  <div key={post.id} ref={lastElementRef}>
+                    <Post
+                      post={post}
+                      data={data}
+                      setData={(items) => setData(items)}
+                    />
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={post.id}>
+                    <Post
+                      post={post}
+                      data={data}
+                      setData={(items) => setData(items)}
+                    />
+                  </div>
+                );
+              }
+            })}
+            {postLoading && (
+              <div className="flex w-full items-center justify-center p-4">
+                <Ring size={50} color="white" />
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

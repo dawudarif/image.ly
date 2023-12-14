@@ -1,11 +1,11 @@
-import axios from 'axios';
-import { MdDelete } from 'react-icons/md';
-import { TbDownload } from 'react-icons/tb';
-import { useSelector } from 'react-redux';
-import { HiMiniHeart } from 'react-icons/hi2';
+import axios from "axios";
+import { MdDelete } from "react-icons/md";
+import { TbDownload } from "react-icons/tb";
+import { useSelector } from "react-redux";
+import { HiMiniHeart } from "react-icons/hi2";
 
 const Post = ({ post, data, setData }) => {
-  const mediaType = post.mediaType ? post.mediaType.split('/')[0] : null;
+  const mediaType = post.mediaType ? post.mediaType.split("/")[0] : null;
   const state = useSelector((store) => store.account.userProfile);
 
   const deletePost = async (id) => {
@@ -80,23 +80,23 @@ const Post = ({ post, data, setData }) => {
   const liked = post.likes && post.likes?.accountId === state.id;
 
   return (
-    <div key={post.id} className='rounded-md border border-[#252525] p-0'>
-      <div className='flex justify-start items-center p-2 gap-2'>
+    <div key={post.id} className="rounded-md border border-[#252525] p-0">
+      <div className="flex items-center justify-start gap-2 p-2">
         <img
           src={post.createdBy.imgUrl}
           alt={post.createdBy.name}
-          className='rounded-[50%] h-8 w-8 border border-[#252525] object-cover'
+          className="h-8 w-8 rounded-[50%] border border-[#252525] object-cover"
         />
-        <p className='font-sans text-white font-bold text-sm'>
+        <p className="font-sans text-sm font-bold text-white">
           {post.createdBy.username}
         </p>
       </div>
-      {mediaType === 'image' ? (
+      {mediaType === "image" ? (
         <img
           src={post.media}
           alt={post.id}
-          loading='lazy'
-          className='rounded-sm overflow-hidden min-h-[20rem] object-contain'
+          loading="lazy"
+          className="min-h-[20rem] overflow-hidden rounded-sm object-contain"
         />
       ) : (
         <video
@@ -106,19 +106,19 @@ const Post = ({ post, data, setData }) => {
           muted
           autoplay
           loop
-          controlsList='nodownload'
-          className='rounded-sm overflow-hidden min-h-[20rem] object-cover max-h-[80vh] w-[100%]'
+          controlsList="nodownload"
+          className="max-h-[80vh] min-h-[20rem] w-[100%] overflow-hidden rounded-sm object-cover"
         />
       )}
 
-      <div className='flex justify-between items-center mt-2 p-4'>
-        <p className='text-white font-medium'>{post.caption}</p>
-        <div className='flex justify-center items-center gap-2'>
-          <div className='flex justify-center items-center gap-1'>
-            <p className='text-white'>{post._count.likes}</p>
+      <div className="mt-2 flex items-center justify-between p-4">
+        <p className="font-medium text-white">{post.caption}</p>
+        <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-1">
+            <p className="text-white">{post._count.likes}</p>
             <HiMiniHeart
               size={24}
-              color={!!liked ? '#e74032' : 'white'}
+              color={!!liked ? "#e74032" : "white"}
               onClick={
                 !!liked
                   ? () => removeLike(post.id, post.likes.id)
@@ -127,12 +127,12 @@ const Post = ({ post, data, setData }) => {
             />
           </div>
 
-          <a id='downloadLink' href={post.media} download={post.caption}>
-            <TbDownload color='white' size={20} />
+          <a id="downloadLink" href={post.media} download={post.caption}>
+            <TbDownload color="white" size={20} />
           </a>
           {post.createdBy.id === state.id && (
             <MdDelete
-              color='white'
+              color="white"
               size={20}
               onClick={() => deletePost(post.id)}
             />

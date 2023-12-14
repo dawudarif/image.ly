@@ -12,10 +12,16 @@ export const getUploadUrl = async (req, res) => {
 
 // get posts for the feed
 export const getPosts = async (req, res) => {
+  const { page = 1, perPage = 6 } = req.query; // Defaulting to 6 posts per page
+
+  const offset = (page - 1) * perPage;
+
   const posts = await prisma.post.findMany({
     orderBy: {
       createdAt: 'desc',
     },
+    skip: offset,
+    take: perPage,
     include: {
       createdBy: {
         select: {
