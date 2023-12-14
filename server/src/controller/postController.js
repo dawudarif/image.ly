@@ -64,7 +64,13 @@ export const getPosts = async (req, res) => {
 
 // get my posts for profile page
 export const myPosts = async (req, res) => {
+  const { page = 1, perPage = 6 } = req.query;
+
+  const offset = (page - 1) * perPage;
+
   const posts = await prisma.post.findMany({
+    skip: offset,
+    take: perPage,
     where: {
       createdById: req.user.id,
     },

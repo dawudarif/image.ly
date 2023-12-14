@@ -38,7 +38,7 @@ const Home = () => {
               </h4>
               <div
                 className="w-max rounded-md p-4 transition-all duration-300 hover:bg-[#252525]"
-                // onClick={() => refreshFeed()}
+                onClick={() => (window.location.href = "/")}
               >
                 <IoRefreshSharp size={30} color="white" />
               </div>
@@ -59,27 +59,18 @@ const Home = () => {
         ) : (
           <>
             {data.map((post, index) => {
-              if (data.length === index + 1) {
-                return (
-                  <div key={post.id} ref={lastElementRef}>
-                    <Post
-                      post={post}
-                      data={data}
-                      setData={(items) => setData(items)}
-                    />
-                  </div>
-                );
-              } else {
-                return (
-                  <div key={post.id}>
-                    <Post
-                      post={post}
-                      data={data}
-                      setData={(items) => setData(items)}
-                    />
-                  </div>
-                );
-              }
+              return (
+                <div
+                  key={post.id}
+                  ref={index === data.length - 1 ? lastElementRef : null}
+                >
+                  <Post
+                    post={post}
+                    data={data}
+                    setData={(items) => setData(items)}
+                  />
+                </div>
+              );
             })}
             {postLoading && (
               <div className="flex w-full items-center justify-center p-4">

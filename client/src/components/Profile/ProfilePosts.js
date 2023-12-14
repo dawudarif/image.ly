@@ -1,25 +1,26 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
+import useFetchProfilePosts from "../../hooks/useFetchProfilePosts";
 
 const ProfilePosts = () => {
-  const [posts, setPosts] = useState(null);
+  const [page, setPage] = useState(1);
+  const { posts, loading, error, fetchNew } = useFetchProfilePosts(page);
+
   const view = posts?.length === 0 ? true : false;
 
-  const myPosts = async () => {
-    try {
-      const response = await axios.get("/api/posts/my-posts", {
-        withCredentials: true,
+  const observer = useRef();
+  const lastElementRef = useCallback(
+    (node) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && fetchNew) {
+          setPage((prev) => prev + 1);
+        }
       });
-
-      setPosts(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    myPosts();
-  }, []);
+      if (node) observer.current.observe(node);
+    },
+    [loading, fetchNew],
+  );
 
   return (
     <div className="mt-2 grid grid-cols-3 gap-1">
@@ -30,7 +31,8 @@ const ProfilePosts = () => {
         posts.map((item, index) => (
           <div
             key={index}
-            className="xs:h-32 w-[100%] border border-[#252525] sm:h-36 md:h-48 lg:h-48"
+            ref={index === posts.length - 1 ? lastElementRef : null}
+            className="w-[100%] border border-[#252525] sm:h-36 md:h-48 lg:h-48 xs:h-32"
           >
             {posts &&
               (item.mediaType.split("/")[0] === "image" ? (
