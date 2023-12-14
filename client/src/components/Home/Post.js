@@ -86,27 +86,32 @@ const Post = ({ post, data, setData }) => {
   };
 
   const removeLike = async (postId, like) => {
-    const body = { id: postId, likeId: like };
-
-    const post = await axios.put(`/api/posts/remove-like`, body, {
-      withCredentials: true,
+    const initialData = [...data];
+    const updatedData = data.map((post) => {
+      if (post.id === postId) {
+        return {
+          ...post,
+          _count: { likes: post._count.likes - 1 },
+          likes: undefined,
+        };
+      }
+      return post;
     });
+    setData(updatedData);
 
-    const response = post.data;
-
-    if (response) {
-      const updatedData = data.map((post) => {
-        if (post.id === response.postId) {
-          return {
-            ...post,
-            _count: { likes: post._count.likes - 1 },
-            likes: undefined,
-          };
-        }
-        return post;
+    try {
+      const body = { id: postId, likeId: like };
+      const post = await axios.put(`/api/posts/remove-like`, body, {
+        withCredentials: true,
       });
-
-      setData(updatedData);
+      const response = post.data;
+      if (response && post.status === 200 && response.postId === postId) {
+        return;
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      setData(initialData);
     }
   };
 
