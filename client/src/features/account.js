@@ -28,7 +28,11 @@ const userSlice = createSlice({
     error: undefined,
     image: null,
   },
-  reducers: {},
+  reducers: {
+    setLoginState: (state, action) => {
+      state.userProfile = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserProfile.pending, (state) => {
@@ -45,6 +49,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { changeUserInfo } = userSlice.actions;
+export const { setLoginState } = userSlice.actions;
 
 export default userSlice.reducer;

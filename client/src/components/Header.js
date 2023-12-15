@@ -3,18 +3,21 @@ import { FiPaperclip } from "react-icons/fi";
 import { FiUser } from "react-icons/fi";
 import { IoLogOutOutline } from "react-icons/io5";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { setLoginState } from "../features/account";
 
 const Header = () => {
   const size = 30;
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const state = useSelector((store) => store.account.userProfile);
 
   const logoutUser = async () => {
     try {
       const response = await axios.get("/api/users/logout");
       if (response) {
+        dispatch(setLoginState(null));
         navigate("/login");
       }
     } catch (error) {
